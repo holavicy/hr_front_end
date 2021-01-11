@@ -38,7 +38,18 @@ module.exports = {
   lintOnSave: true,
   devServer: {
     publicPath, // 和 publicPath 保持一致
-    disableHostCheck: process.env.NODE_ENV === 'development' // 关闭 host check，方便使用 ngrok 之类的内网转发工具
+    disableHostCheck: process.env.NODE_ENV === 'development', // 关闭 host check，方便使用 ngrok 之类的内网转发工具
+    proxy: {
+      '/apiHR': {
+        // target: 'http://192.168.40.161:8082/api',
+        target: 'http://127.0.0.1:8083/api',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/apiHR': ''
+        }
+      }
+    }
   },
   css: {
     loaderOptions: {

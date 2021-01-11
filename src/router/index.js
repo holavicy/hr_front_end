@@ -11,6 +11,10 @@ import util from '@/libs/util.js'
 // 路由数据
 import routes from './routes'
 
+import * as dd from 'dingtalk-jsapi'
+import config from '@/config'
+import api from '@/api'
+
 // fix vue-router NavigationDuplicated
 const VueRouterPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push (location) {
@@ -49,14 +53,56 @@ router.beforeEach(async (to, from, next) => {
     if (token && token !== 'undefined') {
       next()
     } else {
-      // 没有登录的时候跳转到登录界面
-      // 携带上登陆成功之后需要跳转的页面完整路径
-      next({
-        name: 'login',
-        query: {
-          redirect: to.fullPath
-        }
-      })
+      // 判断当前是否是钉钉环境
+      // 若是钉钉环境，进行免登操作；若不是，跳转登录界面
+      const isDD = dd.env.platform !== 'notInDingTalk'
+      if(isDD){
+        dd.ready(function() {
+          dd.runtime.permission.requestAuthCode({
+            corpId: config.corpId, // 企业id
+            onSuccess: function (info) {
+              let code = info.code // 通过该免登授权码可以获取用户身份
+              let data = {
+                code: code
+              }
+              api.DING_LOGIN(data)
+                .then(async (res) => {
+                  console.log(res)
+                  let roles = []
+                  // res.roles.forEach(role => {
+                  //   if (role.id == '1741844343') {
+                  //     roles.push('admin')
+                  //   }
+                  // })
+                  let user_info = {
+                    'staffNo': res.jobnumber,
+                    'avatar': res.avatar,
+                    'name': res.name,
+                    'mobile': res.mobile,
+                    'roles': roles
+                  }
+                  const db = await store.dispatch('d2admin/db/database', {
+                    user: true
+                  })
+                  db
+                    .set('user_info', user_info)
+                    .write()
+                  next()
+                })
+                .catch(err => {
+                  console.log('err', err)
+                })
+            }});
+          });
+      } else {
+        next({
+          name: 'login',
+          query: {
+            redirect: to.fullPath
+          }
+        })
+      }
+      
       // https://github.com/d2-projects/d2-admin/issues/138
       NProgress.done()
     }

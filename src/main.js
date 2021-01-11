@@ -6,14 +6,16 @@ import App from './App'
 import d2Admin from '@/plugin/d2admin'
 // store
 import store from '@/store/index'
+import globalFunc from '@/global.js'
 
 // 菜单和路由设置
 import router from './router'
-import { menuHeader, menuAside } from '@/menu'
+import { menuHeader } from '@/menu'
 import { frameInRoutes } from '@/router/routes'
 
 // 核心插件
 Vue.use(d2Admin)
+Vue.use(globalFunc)
 
 new Vue({
   router,
@@ -26,7 +28,7 @@ new Vue({
     // 设置顶栏菜单
     this.$store.commit('d2admin/menu/headerSet', menuHeader)
     // 设置侧边栏菜单
-    this.$store.commit('d2admin/menu/asideSet', menuAside)
+    // this.$store.commit('d2admin/menu/asideSet', menuAside)
     // 初始化菜单搜索功能
     this.$store.commit('d2admin/search/init', menuHeader)
   },

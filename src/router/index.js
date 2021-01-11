@@ -56,44 +56,38 @@ router.beforeEach(async (to, from, next) => {
       // 判断当前是否是钉钉环境
       // 若是钉钉环境，进行免登操作；若不是，跳转登录界面
       const isDD = dd.env.platform !== 'notInDingTalk'
-      if(isDD){
-        dd.ready(function() {
+      if (isDD) {
+        dd.ready(function () {
           dd.runtime.permission.requestAuthCode({
             corpId: config.corpId, // 企业id
             onSuccess: function (info) {
-              let code = info.code // 通过该免登授权码可以获取用户身份
-              let data = {
+              const code = info.code // 通过该免登授权码可以获取用户身份
+              const data = {
                 code: code
               }
               api.DING_LOGIN(data)
                 .then(async (res) => {
-                  console.log(res)
-                  let roles = []
-                  // res.roles.forEach(role => {
-                  //   if (role.id == '1741844343') {
-                  //     roles.push('admin')
-                  //   }
-                  // })
-                  let user_info = {
-                    'staffNo': res.jobnumber,
-                    'avatar': res.avatar,
-                    'name': res.name,
-                    'mobile': res.mobile,
-                    'roles': roles
+                  const userInfo = {
+                    staffNo: res.jobnumber,
+                    avatar: res.avatar,
+                    name: res.name,
+                    mobile: res.mobile
                   }
+                  await store.dispatch('d2admin/user/set', { name: res.name }, { root: true })
                   const db = await store.dispatch('d2admin/db/database', {
                     user: true
                   })
                   db
-                    .set('user_info', user_info)
+                    .set('user_info', userInfo)
                     .write()
                   next()
                 })
                 .catch(err => {
                   console.log('err', err)
                 })
-            }});
-          });
+            }
+          })
+        })
       } else {
         next({
           name: 'login',
@@ -102,7 +96,6 @@ router.beforeEach(async (to, from, next) => {
           }
         })
       }
-      
       // https://github.com/d2-projects/d2-admin/issues/138
       NProgress.done()
     }

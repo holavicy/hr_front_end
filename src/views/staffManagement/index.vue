@@ -56,7 +56,6 @@
         <el-table-column prop="ENDDATE" label="毕业时间" width="120"></el-table-column>
         <el-table-column prop="JTAGE" label="集团工龄" width="100"></el-table-column>
         <el-table-column prop="MXAGE" label="母线工龄" width="100"></el-table-column>
-        <el-table-column prop="ZHIDENG" label="行政级别工龄" width="120"></el-table-column>
         <el-table-column prop="ZWMC" label="职务名称" width="120"></el-table-column>
         <el-table-column prop="ZWJB" label="职务级别" width="100"></el-table-column>
         <el-table-column prop="ZHIJI" label="行政级别" width="100"></el-table-column>
@@ -141,9 +140,10 @@ export default {
         name: this.name
       }
       this.$api.EXPORT_HUA_MING_CE(data).then((res) => {
+        console.log(res)
         this.loading = false
         const href = 'http://' + this.HOST_FILES + res.url
-        window.location.href = href
+        // window.location.href = href
         this.$message.success('导出成功')
       }).catch(e => {
         this.loading = false
@@ -156,7 +156,7 @@ export default {
     },
     handleCurrentChange (val) {
       this.pagination.currentPage = val
-      this.getList(1)
+      this.getList()
     }
   },
   created () {

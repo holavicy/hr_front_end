@@ -19,7 +19,7 @@ export const menuHeader = supplementPath([
   { path: '/index', title: '首页', icon: 'home' },
   {
     title: '员工管理',
-    icon: 'folder-o',
+    icon: 'user',
     children: [
       { path: '/staffManagement/huamingce', title: '花名册' }
     ]
@@ -30,7 +30,7 @@ export const menuAside = supplementPath([
   { path: '/index', title: '首页', icon: 'home' },
   {
     title: '员工管理',
-    icon: 'folder-o',
+    icon: 'user',
     children: [
       { path: '/staffManagement/huamingce', title: '花名册' }
     ]

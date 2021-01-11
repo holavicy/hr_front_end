@@ -4,7 +4,7 @@
         <div class="action-wrapper">
             <div class="filter-item"><span>工号：</span> <el-input size="mini" placeholder="请输入内容" v-model="staffNoSearch"></el-input></div>
             <div class="filter-item"><span>姓名：</span> <el-input size="mini" placeholder="请输入内容" v-model="name"></el-input></div>
-            <el-button size="mini" type="primary" @click="getAllUsers()">查询</el-button>
+            <el-button size="mini" type="primary" @click="getList(1)">查询</el-button>
             <el-button size="mini" type="primary" plain @click="exportFile()">导出</el-button>
         </div>
     </template>

@@ -20,7 +20,7 @@ export default {
         '#ffd700',
         '#90ee90',
         '#00ced1',
-        '#1e90ff',
+        '#a5d8c7',
         '#c71585'
       ]
     }

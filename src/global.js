@@ -19,6 +19,6 @@ function uploadFile (url, payload) {
 export default {
   install: function (Vue) {
     Vue.prototype.uploadFile = (url, payload) => uploadFile(url, payload)
-    Vue.prototype.HOST_FILES = '222.186.81.37:5000/gift/'
+    Vue.prototype.HOST_FILES = 'http://192.168.40.161:5000/hr/'
   }
 }

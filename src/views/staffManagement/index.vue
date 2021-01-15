@@ -142,11 +142,9 @@ export default {
       this.$api.EXPORT_HUA_MING_CE(data).then((res) => {
         // console.log(res)
         this.loading = false
-        console.log(1)
         const href = 'http://' + this.HOST_FILES + res.url
-        console.log(2)
         console.log(href)
-        // window.location.href = href
+        window.location.href = href
         this.$message.success('导出成功')
       }).catch(e => {
         this.loading = false

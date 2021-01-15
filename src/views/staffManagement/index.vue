@@ -48,7 +48,7 @@
         <el-table-column prop="MUXIANBEGINDATE" label="入职母线日期" width="120"></el-table-column>
         <el-table-column prop="ZCDENGJI" label="职称等级" width="120"></el-table-column>
         <el-table-column prop="ZCNAME" label="职称名称" width="120"></el-table-column>
-        <el-table-column prop="CREATIONTIME" label="职称获取时间" width="120"></el-table-column>
+        <el-table-column prop="CREATIONTIME" label="职称获取时间" width="140"></el-table-column>
         <el-table-column prop="XUELI" label="学历" width="120"></el-table-column>
         <el-table-column prop="SCHOOL" label="学校名称" width="180"></el-table-column>
         <el-table-column prop="MAJOR" label="专业" width="120"></el-table-column>

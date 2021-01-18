@@ -57,8 +57,8 @@
         <el-table-column prop="JTAGE" label="集团工龄" width="100"></el-table-column>
         <el-table-column prop="MXAGE" label="母线工龄" width="100"></el-table-column>
         <el-table-column prop="ZWMC" label="职务名称" width="120"></el-table-column>
-        <el-table-column prop="ZWJB" label="职务级别" width="100"></el-table-column>
-        <el-table-column prop="ZHIJI" label="行政级别" width="100"></el-table-column>
+        <el-table-column prop="ZHIJI" label="职务级别" width="100"></el-table-column>
+        <el-table-column prop="ZWJB" label="行政级别" width="100"></el-table-column>
         <el-table-column prop="POSTSERIESNAME" label="岗位序列" width="120"></el-table-column>
         <el-table-column prop="JOBTYPENAME" label="员工状态" width="120"></el-table-column>
         <el-table-column label="是否有试用期" width="120">

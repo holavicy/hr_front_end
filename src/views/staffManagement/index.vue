@@ -4,6 +4,27 @@
         <div class="action-wrapper">
             <div class="filter-item"><span>工号：</span> <el-input size="mini" placeholder="请输入内容" v-model="staffNoSearch"></el-input></div>
             <div class="filter-item"><span>姓名：</span> <el-input size="mini" placeholder="请输入内容" v-model="name"></el-input></div>
+            <!-- <div class="filter-item">
+              <span>组织：</span>
+              <el-cascader :options="orgTree" size="mini" :props="props" clearable v-model="orgValue">
+                <template slot-scope="{ node, data }">
+                  <span>{{ data.label }}({{ data.num }})</span>
+                </template>
+              </el-cascader>
+            </div> -->
+            <div class="filter-item">
+              <span>业务单元：</span> 
+              <el-select v-model="groupValue" placeholder="请选择" size="mini" clearable>
+                <el-option
+                  v-for="item in groupList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                  <span style="float: left">{{ item.label }}({{item.num}})</span>
+      <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+    </el-option>
+              </el-select>
+            </div>
             <el-button size="mini" type="primary" @click="getList(1)">查询</el-button>
             <el-button size="mini" type="primary" plain @click="exportFile()">导出</el-button>
         </div>
@@ -26,6 +47,11 @@
         <el-table-column label="三级部门" width="120">
           <template slot-scope="scope">
             {{scope.row.dept_list[2]}}
+          </template>
+        </el-table-column>
+        <el-table-column label="四级部门" width="120">
+          <template slot-scope="scope">
+            {{scope.row.dept_list[3]}}
           </template>
         </el-table-column>
         <el-table-column prop="POSTNAME" label="岗位" width="120"></el-table-column>
@@ -76,7 +102,14 @@
             {{scope.row.JOBTYPENAME == '试用期员工' ? scope.row.PROBENDDATE:''}}
           </template>
         </el-table-column>
-        <el-table-column prop="ZZDATE" label="实际转正日期" width="120"></el-table-column>
+        <!-- <el-table-column prop="ZZDATE" label="实际转正日期" width="120"></el-table-column> -->
+
+        <el-table-column label="实际转正日期" width="120">
+           <template slot-scope="scope">
+            {{scope.row.IFPROP == 'Y' ? scope.row.ZZDATE:''}}
+          </template>
+        </el-table-column>
+
         <el-table-column prop="LINKMAN" label="紧急联系人姓名" width="120"></el-table-column>
         <el-table-column prop="LINKMANMOBILE" label="紧急联系人电话" width="120"></el-table-column>
     </el-table>
@@ -101,8 +134,14 @@ export default {
       },
       staffNoSearch: '',
       name: '',
+      orgValue: '',
       list: [],
-      userInfo: {}
+      userInfo: {},
+      orgTree: [],
+      props: {multiple: true,
+      checkStrictly: true},
+      groupList: [],
+      groupValue: ''
     }
   },
   methods: {
@@ -121,9 +160,23 @@ export default {
       if (page) {
         this.pagination.currentPage = page
       }
+      console.log(this.groupValue)
+      // let orgSelectedList = []
+      // if(this.orgValue.length>0) {
+      //   this.orgValue.forEach((item) => {
+      //     let lastDept = item.pop()
+      //     orgSelectedList.push(lastDept)
+      //   })
+      // }
+
+      // console.log(orgSelectedList)
+      // let orgSelectedStr = orgSelectedList.join(',')
+      // console.log(orgSelectedStr)
       const data = {
         staffNo: this.staffNoSearch,
         name: this.name,
+        groupValue: this.groupValue,
+        // orgSelectedStr: orgSelectedStr,
         page: this.pagination.currentPage,
         pageSize: this.pagination.pageSize
       }
@@ -133,11 +186,49 @@ export default {
         this.pagination.total = res.count
       })
     },
+    //获取部门列表
+    getOrgList () {
+      this.$api.GET_ORG_LIST({}).then((res) => {
+        console.log(res)
+        const orgList = [...res.list]
+
+
+        //可以生成多级嵌套的树
+        let orgTree = []
+        let list = orgList.reduce(function(prev, item){
+                        prev[item.fatherCode]?prev[item.fatherCode].push(item):prev[item.fatherCode] = [item];
+                        return prev
+                    },{});
+        console.log(list)
+        
+                    
+        for (let key in list) {
+          list[key].forEach(function (item) {
+            if (list[item.value]) {
+              item.children = list[item.value]
+            }
+            // item.children = list[item.value] ? list[item.value] : [];
+            });
+        }
+        
+        orgTree = list[0]
+        console.log(orgTree)
+        this.orgTree = orgTree
+      })
+    },
+     //获取业务单元列表
+    getGroupsList () {
+      this.$api.GET_GROUPS_LIST({}).then((res) => {
+        console.log(res)
+        this.groupList = res.list
+      })
+    },
     exportFile () {
       this.loading = true
       const data = {
         staffNo: this.staffNoSearch,
-        name: this.name
+        name: this.name,
+        groupValue: this.groupValue,
       }
       this.$api.EXPORT_HUA_MING_CE(data).then((res) => {
         // console.log(res)
@@ -163,6 +254,8 @@ export default {
   created () {
     this.load()
     this.getList(1)
+    this.getGroupsList()
+    // this.getOrgList()
   }
 }
 </script>
